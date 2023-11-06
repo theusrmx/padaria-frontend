@@ -1,0 +1,17 @@
+.banner-principal h1{
+    padding: 10px;
+}
+
+.card{
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-radius: 20px;
+    border: none;
+}
+
+.imagem-card{
+    height: 250px;
+    object-fit: cover; /* Para manter a proporção da imagem e preencher o espaço */
+    border-radius: 20px 20px 0 0;
+}
+

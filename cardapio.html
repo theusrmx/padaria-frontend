@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega de Marmitas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <img src="./image/logo_home.png" alt="Logo Padaria Sabor Brasileiro" width="30" height="auto" class="d-inline-block align-text-top">
+            <a class="navbar-brand" href="./index.html">Padaria Sabor Brasileiro</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./cardapio.html">Cardápio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="carrinho.html">Carrinho</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <body>
+        <div class="container mt-5">
+            <h2>Cardápio do dia</h2>
+            <br>
+            <div class="row" id="marmitas-container">
+                <!-- Os cards serão preenchidos dinamicamente aqui -->
+            </div>
+        </div>
+       
+        <!-- Seção para listar as marmitas adicionadas -->
+        <div class="container mt-5">
+            <h2>Marmitas Adicionadas</h2>
+            <ul id="marmitas-adicionadas">
+                <!-- Marmitas adicionadas serão listadas aqui -->
+            </ul>
+        </div>
+
+        <!-- Botão para ir para a página "carrinho.html" -->
+        <div class="container mt-3">
+            <a href="carrinho.html" class="btn btn-primary">Ir para o Carrinho</a>
+        </div>
+
+        <script src="scritps/script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega de Marmitas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <img src="./image/logo_home.png" alt="Logo Padaria Sabor Brasileiro" width="30" height="auto" class="d-inline-block align-text-top">
+            <a class="navbar-brand" href="./index.html">Padaria Sabor Brasileiro</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./cardapio.html">Cardápio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="carrinho.html">Carrinho</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-5">
+        <h2>Pedidos</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço Unitário</th>
+                    <th>Observação</th>
+                    <th>Total</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Itens do carrinho serão exibidos aqui -->
+                <tr>
+                    
+                </tr>
+            </tbody>
+        </table>
+        <p id="total-pedido">Total do Pedido: R$ 0,00</p>
+
+        <form id="pedidoForm"> <!-- Adicione o elemento form -->
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Nome do Cliente" id="clienteInput" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Endereço de Entrega" id="enderecoInput" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Telefone" id="telInput" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3" id="btnEnviarPedido">Confirmar Pedido</button>
+        </form>
+
+    <script src="./scritps/carrinho_script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
