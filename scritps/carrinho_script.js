@@ -3,6 +3,7 @@ const baseUrl = 'http://localhost:8080/'
 
 // Recupere os itens do carrinho do localStorage
 var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+console.log(carrinho)
 
 // Seletor para a tabela de itens do carrinho
 var carrinhoTbody = document.querySelector("tbody");
@@ -13,15 +14,20 @@ var totalPedido = 0;
 carrinho.forEach(function (item, index) {
     var newRow = carrinhoTbody.insertRow();
     var produtoCell = newRow.insertCell(0);
-    var precoUnitarioCell = newRow.insertCell(1);
-    var observacaoCell = newRow.insertCell(2);
-    var totalCell = newRow.insertCell(3);
-    var excluirCell = newRow.insertCell(4); // Coluna para o botão de excluir
+    var tamanhoCell = newRow.insertCell(1);
+    var precoUnitarioCell = newRow.insertCell(2);
+    var quantidadeCell = newRow.insertCell(3);
+    var observacaoCell = newRow.insertCell(4);
+    var totalCell = newRow.insertCell(5);
+    var excluirCell = newRow.insertCell(6); // Coluna para o botão de excluir
 
     produtoCell.innerHTML = item.nome;
-    observacaoCell.innerHTML = "<input type='text' placeholder='Observação' id='observacao-" + index + "'>"; // Campo de observação
+    tamanhoCell.innerHTML = item.tamanho;
     precoUnitarioCell.innerHTML = "R$ " + item.preco.toFixed(2);
-    totalCell.innerHTML = "R$ " + item.preco.toFixed(2);
+    quantidadeCell.innerHTML = item.quantidade;
+    observacaoCell.innerHTML = "<input type='text' placeholder='Observação' id='observacao-" + index + "'>"; // Campo de observação
+    
+    totalCell.innerHTML = "R$ " + item.precoTotal.toFixed(2);
 
     // Botão de excluir
     var excluirButton = document.createElement("button");
@@ -34,7 +40,7 @@ carrinho.forEach(function (item, index) {
 
     excluirCell.appendChild(excluirButton);
 
-    totalPedido += item.preco;
+    totalPedido += item.precoTotal;
 });
 
 // Atualize o total do pedido
@@ -47,11 +53,12 @@ function excluirItemDoCarrinho(index) {
     location.reload(); // Recarrega a página para atualizar a tabela
 }
 
+
 // Função para enviar o pedido para o backend
 function enviarPedidoParaBackend() {
     var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    var dataHora = new Date().toISOString(); // Obtém a data e hora no formato UTC
-
+    console.log(carrinho)
+    
     var dataHora = new Date(); // Data e hora atual
 
     var options = {
@@ -60,11 +67,11 @@ function enviarPedidoParaBackend() {
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
-        timeZoneName: 'short'
+        second: '2-digit'
     };
 
     var dataHoraFormatada = new Intl.DateTimeFormat('pt-BR', options).format(dataHora);
+
     
     // Construir o objeto do pedido
     var pedido = {
@@ -79,7 +86,7 @@ function enviarPedidoParaBackend() {
     console.log(pedido)
 
     // Enviar o pedido para o backend
-    fetch('/carrinho/checkout', {
+    fetch(baseUrl + 'carrinho/checkout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -97,6 +104,7 @@ function enviarPedidoParaBackend() {
         } else {
             // Lidar com erros, se houver
             console.error('Erro ao enviar o pedido para o backend.');
+            alert('Erro ao fechar o pedido.')
         }
     })
     .catch(error => {
@@ -104,4 +112,52 @@ function enviarPedidoParaBackend() {
     });
 }
 
+document.querySelector('#pedidoForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Evita que o formulário seja submetido de forma padrão
+    enviarPedidoParaBackend();
+});
 
+
+function enviarPedido(){
+    var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    console.log(carrinho)
+
+    var pedido = {
+        dataPedido: new Date(), // Use a data atual
+        nomeCliente: document.getElementById('clienteInput').value,
+        enderecoCliente: document.getElementById('enderecoInput').value,
+        telefoneCliente: document.getElementById('telInput').value,
+        statusPedido: "Em andamento", // Status padrão
+        totalPedido: totalPedido // Certifique-se de definir o totalPedido corretamente
+      };
+
+      console.log(pedido)
+      /*
+      // URL do endpoint para cadastrar o pedido no backend
+      var url = baseUrl + '/pedidos/criar';
+      
+      // Configuração da requisição
+      var requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pedido)
+      };
+      
+      // Realize a requisição
+      fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Pedido cadastrado com sucesso:', data);
+          // Realize ações adicionais, como redirecionar o usuário ou exibir uma mensagem de confirmação
+        })
+        .catch(error => {
+          console.error('Erro ao cadastrar o pedido:', error);
+          // Lide com o erro de alguma forma, como exibindo uma mensagem de erro
+        });
+        */
+
+}
+
+window.onload = enviarPedido
