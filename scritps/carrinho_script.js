@@ -53,192 +53,114 @@ function excluirItemDoCarrinho(index) {
     location.reload(); // Recarrega a página para atualizar a tabela
 }
 
-/*
-// Função para enviar o pedido para o backend
-function enviarPedidoParaBackend() {
-    var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    console.log(carrinho)
-    
-    var dataHora = new Date(); // Data e hora atual
+function enviarPedido() {
+  var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  console.log('Carrinho:', carrinho);
 
-    var options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    };
+  var dataAtual = new Date().toISOString(); // Corrigido para adicionar parênteses
+  var totalPedido = calcularTotalPedido(carrinho);
+  var idPedidoPersonalizado = gerarIdPedido();
 
-    var dataHoraFormatada = new Intl.DateTimeFormat('pt-BR', options).format(dataHora);
-
-    
-    // Construir o objeto do pedido
-    var pedido = {
-        dataHora: dataHoraFormatada,
-        statusPedido: "Em andamento",
-        nomeCliente: document.getElementById('clienteInput').value,
-        enderecoCliente: document.getElementById('enderecoInput').value,
-        telefoneCliente: document.getElementById('telInput').value,
-        itensPedido: carrinho
-    };
-
-    console.log(pedido)
-
-    // Enviar o pedido para o backend
-    fetch(baseUrl + 'carrinho/checkout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pedido)
-    })
-    .then(response => {
-        if (response.ok) {
-            // Pedido enviado com sucesso
-            // Limpar o carrinho
-            localStorage.removeItem('carrinho');
-            // Atualizar a tabela do carrinho (se necessário)
-            atualizarTabelaCarrinho();
-            alert('Pedido realizado!')
-        } else {
-            // Lidar com erros, se houver
-            console.error('Erro ao enviar o pedido para o backend.');
-            alert('Erro ao fechar o pedido.')
-        }
-    })
-    .catch(error => {
-        console.error('Erro ao enviar o pedido para o backend:', error);
-    });
-} 
-
-document.querySelector('#pedidoForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Evita que o formulário seja submetido de forma padrão
-    enviarPedidoParaBackend();
-}); */
-/*
-function enviarPedido(){
-    var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    console.log(carrinho)
-
-    var dataAtual = new Date().toISOString();
-
-    var pedido = {
-        dataPedido: dataAtual, 
-        nomeCliente: document.getElementById('clienteInput').value,
-        enderecoCliente: document.getElementById('enderecoInput').value,
-        telefoneCliente: document.getElementById('telInput').value,
-        statusPedido: "Em andamento", // Status padrão
-        totalPedido: totalPedido 
-      };
-
-      console.log(pedido)
-      
-      // URL do endpoint para cadastrar o pedido no backend
-      var url = baseUrl + 'pedidos/criar';
-      
-      // Configuração da requisição
-      var requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pedido)
-      };
-      
-      // Realize a requisição
-      fetch(url, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-          console.log('Pedido cadastrado com sucesso:', data);
-          alert("Pedido registrado com sucesso");
-          // Realize ações adicionais, como redirecionar o usuário ou exibir uma mensagem de confirmação
-        })
-        .catch(error => {
-          console.error('Erro ao cadastrar o pedido:', error);
-          alert('Erro ao registrar o pedido.');
-          // Lide com o erro de alguma forma, como exibindo uma mensagem de erro
-        });   
-}
-*/
-
-// Função para gerar um ID temporário
-function generateTemporaryId() {
-  return 'temp_' + Math.random().toString(36).substr(2, 9); // Geração simples para exemplo
-}
-
-// Método para criar o pedido
-function criarPedido() {
-  var dataAtual = new Date().toISOString();
+  console.log("ID do Pedido: " + idPedidoPersonalizado);
 
   var pedido = {
+    idPedido: idPedidoPersonalizado,
     dataPedido: dataAtual,
     nomeCliente: document.getElementById('clienteInput').value,
     enderecoCliente: document.getElementById('enderecoInput').value,
     telefoneCliente: document.getElementById('telInput').value,
-    statusPedido: "Em andamento", // Status padrão
-    totalPedido: totalPedido,
-    idTemporario: generateTemporaryId(), // Gere um ID temporário no frontend
+    statusPedido: "Em andamento",
+    totalPedido: totalPedido
   };
 
-  // Adicione o pedido ao localStorage para referência futura
-  var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  carrinho.push(pedido);
-  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  console.log('Pedido:', pedido);
 
-  return pedido.idTemporario; // Retorne o ID temporário
-}
+  // Certifique-se de que baseUrl esteja definida adequadamente
+  var urlPedido = baseUrl + 'pedidos/criar';
 
-// Função para enviar os itens do pedido
-function enviarItensDoPedido(pedidoIdTemporario) {
-  var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  var requestOptionsPedido = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pedido)
+  };
 
-  carrinho.forEach(itemCarrinho => {
-    var itemPedido = {
-      pedido: pedidoIdTemporario,
-      produtos: itemCarrinho.idItem,
-      quantidade: itemCarrinho.quantidade,
-      precoUnitario: itemCarrinho.preco,
-      observacao: "", // Adicione observação, se necessário
-      totalItem: itemCarrinho.preco * itemCarrinho.quantidade,
-    };
+  // Cadastro do Pedido
+  fetch(urlPedido, requestOptionsPedido)
+    .then(response => response.json())
+    .then(data => {
+      console.log('Pedido cadastrado com sucesso:', data);
+      alert('Pedido registrado com sucesso.');
+      
+      // Cadastro dos Itens do Pedido
+      carrinho.forEach(itemCarrinho => {
+        var itemPedido = {
+          pedido: idPedidoPersonalizado,
+          produtos: itemCarrinho.idItem,
+          quantidade: itemCarrinho.quantidade,
+          tamanho: itemCarrinho.tamanho,
+          precoUnitario: itemCarrinho.preco || 0, // Defina um valor padrão se for nulo ou indefinido
+          observacao: "", // Adicione observação, se necessário
+          totalItem: itemCarrinho.preco * itemCarrinho.quantidade,
+        };
+        
+        console.log('Item do Carrinho:', itemCarrinho);
+        console.log('Item do Pedido:', itemPedido);
 
-    console.log(itemPedido)
+        // Certifique-se de que baseUrl esteja definida adequadamente
+        var urlItemPedido = baseUrl + 'itemPedido/criar';
 
-    // URL do endpoint para cadastrar o ItemPedido no backend
-    var itemPedidoUrl = baseUrl + 'itemPedido/criar'; // Substitua pelo URL correto
+        var requestOptionsItem = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(itemPedido),
+        };
 
-    // Configuração da requisição para criar o ItemPedido
-    var itemPedidoRequestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(itemPedido),
-    };
-
-    // Realize a requisição para criar o ItemPedido
-    fetch(itemPedidoUrl, itemPedidoRequestOptions)
-      .then(response => response.json())
-      .then(itemPedidoData => {
-        console.log('ItemPedido cadastrado com sucesso:', itemPedidoData);
-        // Realize ações adicionais, se necessário
-      })
-      .catch(error => {
-        console.error('Erro ao cadastrar o ItemPedido:', error);
-        // Lide com o erro de alguma forma
+        // Cadastro do Item do Pedido
+        fetch(urlItemPedido, requestOptionsItem)
+          .then(response => response.json())
+          .then(dataItem => {
+            console.log('Item do pedido cadastrado com sucesso:', dataItem);
+          })
+          .catch(error => {
+            console.error('Erro ao cadastrar o ItemPedido:', error);
+            // Lide com o erro de alguma forma
+          });
       });
-  });
-
-  // Limpe o localStorage após o envio bem-sucedido de todos os itens
-  localStorage.removeItem('carrinho');
+    })
+    .catch(error => {
+      console.error('Erro ao cadastrar o pedido:', error);
+      alert('Erro ao registrar o pedido, tente novamente.');
+    });
 }
 
-// Função principal que chama ambos os métodos
-function enviarPedido() {
-  var pedidoIdTemporario = criarPedido();
 
-  // Continue com o envio dos itens do pedido utilizando o ID temporário
-  enviarItensDoPedido(pedidoIdTemporario);
+// Função para calcular o total do pedido com base no carrinho
+function calcularTotalPedido(carrinho) {
+  // Lógica para calcular o total do pedido a partir do carrinho
+  // Substitua isso com sua própria lógica de cálculo
+  return carrinho.reduce((total, item) => total + item.preco * item.quantidade, 0);
 }
+
+function gerarIdPedido() {
+  var dataFormatada = formatDateToString(new Date());
+  var numeroPedido = gerarNumeroPedido();
+  return dataFormatada + "-" + numeroPedido;
+}
+
+function formatDateToString(date) {
+  var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return new Intl.DateTimeFormat('en-US', options).format(date).replace(/\//g, '').replace(/,/g, '').replace(/ /g, '').replace(/:/g, '');
+}
+
+function gerarNumeroPedido() {
+  // Lógica para gerar o número de pedido, por exemplo, a partir de um contador
+  // Aqui pode ser uma lógica específica do cliente ou obtida do servidor
+  return Math.floor(Math.random() * 1000) + 1;
+}
+
+
 
