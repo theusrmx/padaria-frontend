@@ -1,6 +1,4 @@
-//URL BASE PARA API
-const baseUrl = 'http://localhost:8080/'
-
+var baseUrl = 'http://localhost:8080/'; 
 // Recupere os itens do carrinho do localStorage
 var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 console.log(carrinho)
@@ -53,90 +51,6 @@ function excluirItemDoCarrinho(index) {
     location.reload(); // Recarrega a página para atualizar a tabela
 }
 
-function enviarPedido() {
-  var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  console.log('Carrinho:', carrinho);
-
-  var dataAtual = new Date().toISOString(); // Corrigido para adicionar parênteses
-  var totalPedido = calcularTotalPedido(carrinho);
-  var idPedidoPersonalizado = gerarIdPedido();
-
-  console.log("ID do Pedido: " + idPedidoPersonalizado);
-
-  var pedido = {
-    idPedido: idPedidoPersonalizado,
-    dataPedido: dataAtual,
-    nomeCliente: document.getElementById('clienteInput').value,
-    enderecoCliente: document.getElementById('enderecoInput').value,
-    telefoneCliente: document.getElementById('telInput').value,
-    statusPedido: "Em andamento",
-    totalPedido: totalPedido
-  };
-
-  console.log('Pedido:', pedido);
-
-  // Certifique-se de que baseUrl esteja definida adequadamente
-  var urlPedido = baseUrl + 'pedidos/criar';
-
-  var requestOptionsPedido = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(pedido)
-  };
-
-  // Cadastro do Pedido
-  fetch(urlPedido, requestOptionsPedido)
-    .then(response => response.json())
-    .then(data => {
-      console.log('Pedido cadastrado com sucesso:', data);
-      alert('Pedido registrado com sucesso.');
-      
-      // Cadastro dos Itens do Pedido
-      carrinho.forEach(itemCarrinho => {
-        var itemPedido = {
-          pedido: idPedidoPersonalizado,
-          produtos: itemCarrinho.idItem,
-          quantidade: itemCarrinho.quantidade,
-          tamanho: itemCarrinho.tamanho,
-          precoUnitario: itemCarrinho.preco || 0, // Defina um valor padrão se for nulo ou indefinido
-          observacao: "", // Adicione observação, se necessário
-          totalItem: itemCarrinho.preco * itemCarrinho.quantidade,
-        };
-        
-        console.log('Item do Carrinho:', itemCarrinho);
-        console.log('Item do Pedido:', itemPedido);
-
-        // Certifique-se de que baseUrl esteja definida adequadamente
-        var urlItemPedido = baseUrl + 'itemPedido/criar';
-
-        var requestOptionsItem = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(itemPedido),
-        };
-
-        // Cadastro do Item do Pedido
-        fetch(urlItemPedido, requestOptionsItem)
-          .then(response => response.json())
-          .then(dataItem => {
-            console.log('Item do pedido cadastrado com sucesso:', dataItem);
-          })
-          .catch(error => {
-            console.error('Erro ao cadastrar o ItemPedido:', error);
-            // Lide com o erro de alguma forma
-          });
-      });
-    })
-    .catch(error => {
-      console.error('Erro ao cadastrar o pedido:', error);
-      alert('Erro ao registrar o pedido, tente novamente.');
-    });
-}
-
 
 // Função para calcular o total do pedido com base no carrinho
 function calcularTotalPedido(carrinho) {
@@ -146,14 +60,10 @@ function calcularTotalPedido(carrinho) {
 }
 
 function gerarIdPedido() {
-  var dataFormatada = formatDateToString(new Date());
+  var dataAtual = new Date();
+  var dataFormatada = dataAtual.toISOString().split('T')[0];
   var numeroPedido = gerarNumeroPedido();
   return dataFormatada + "-" + numeroPedido;
-}
-
-function formatDateToString(date) {
-  var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-  return new Intl.DateTimeFormat('en-US', options).format(date).replace(/\//g, '').replace(/,/g, '').replace(/ /g, '').replace(/:/g, '');
 }
 
 function gerarNumeroPedido() {
@@ -162,5 +72,95 @@ function gerarNumeroPedido() {
   return Math.floor(Math.random() * 1000) + 1;
 }
 
+function limparCarrinho() {
+  // Limpar o carrinho no localStorage
+  localStorage.removeItem('carrinho');
+  // Recarregar a página para atualizar a tabela ou realizar outras ações necessárias
+  location.reload();
+}
 
 
+
+async function enviarPedido() {
+  try {
+    var carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+    var dataAtual = new Date().toISOString();
+    var totalPedido = calcularTotalPedido(carrinho);
+    var idPedidoPersonalizado = gerarIdPedido();
+
+    console.log("ID do Pedido: " + idPedidoPersonalizado);
+
+    var pedido = {
+      dataPedido: dataAtual,
+      nomeCliente: document.getElementById('clienteInput').value,
+      enderecoCliente: document.getElementById('enderecoInput').value,
+      telefoneCliente: document.getElementById('telInput').value,
+      statusPedido: "PENDENTE",
+      totalPedido: totalPedido
+    };
+
+    var itensPedido = carrinho.map(itemCarrinho => ({
+      idItem: itemCarrinho.idItem,
+      quantidade: itemCarrinho.quantidade,
+      precoUnitario: itemCarrinho.preco || 0,
+      observacao: itemCarrinho.observacao || "",
+      tamanho: itemCarrinho.tamanho || "",
+      totalItem: itemCarrinho.preco * itemCarrinho.quantidade || 0,
+      produtos: itemCarrinho.idItem || 0
+    }));
+
+    var dadosPedido = {
+      pedido: pedido,
+      itensPedido: itensPedido
+    };
+
+    console.log('Dados do Pedido:', dadosPedido);
+
+    var urlPedido = baseUrl + 'pedidos/checkout';
+
+    var requestOptionsPedido = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json' // Adicione os headers necessários
+      },
+      body: JSON.stringify(dadosPedido)
+    };
+
+    const response = await fetch(urlPedido, requestOptionsPedido);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error('Erro ao cadastrar o pedido: ' + (data.error || response.statusText));
+    }
+
+    console.log('Pedido cadastrado com sucesso:', data);
+    alert('Pedido registrado com sucesso.');
+    
+    // Limpar o carrinho após o sucesso do pedido
+    limparCarrinho();
+  } catch (error) {
+    console.error(error);
+    alert('Erro ao registrar o pedido, tente novamente.');
+  }
+}
+
+document.getElementById('pedidoForm').addEventListener('submit', function (event) {
+  event.preventDefault(); // Impede o envio padrão do formulário
+
+  // Adicione aqui sua lógica de validação antes de enviar o pedido
+  var clienteInput = document.getElementById('clienteInput').value;
+  var enderecoInput = document.getElementById('enderecoInput').value;
+  var telInput = document.getElementById('telInput').value;
+
+  if (clienteInput.trim() === '' || enderecoInput.trim() === '' || telInput.trim() === '') {
+      alert('Por favor, preencha todos os campos.');
+  } else if (carrinho.length === 0) {
+      alert('O carrinho está vazio. Adicione itens ao carrinho antes de enviar o pedido.');
+  } else {
+      // Se os campos estiverem preenchidos e o carrinho não estiver vazio,
+      // você pode chamar sua função enviarPedido()
+      enviarPedido();
+  }
+});
