@@ -1,80 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Exibição de Pedidos</title>
-  <!-- Inclua o CSS do Bootstrap -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega de Marmitas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 
-<div class="container mt-5">
-  <div class="accordion" id="accordionPedidos">
-    <!-- Itens do accordion serão adicionados dinamicamente aqui -->
-  </div>
-</div>
-
-<!-- Inclua o JS do Bootstrap e o jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  // Fazendo fetch dos dados da API
-  fetch('http://localhost:8080/pedidos/all')
-    .then(response => response.json())
-    .then(data => {
-      const accordionPedidos = document.getElementById('accordionPedidos');
-
-      // Iterando sobre os pedidos para preencher o accordion
-      data.forEach((pedido, index) => {
-        const itensPedidoHTML = pedido.itensPedido.map(item => `
-          <li>
-            <strong>Produto:</strong> ${item.produtos.nomeProduto}<br>
-            <strong>Quantidade:</strong> ${item.quantidade}<br>
-            <strong>Preço Unitário:</strong> ${item.precoUnitario.toFixed(2)}<br>
-            <strong>Observação:</strong> ${item.observacao}<br>
-            <strong>Tamanho:</strong> ${item.tamanho}<br>
-            <strong>Total do Item:</strong> ${item.totalItem.toFixed(2)}
-          </li>
-        `).join('');
-
-        // Adicionando item ao accordion
-        accordionPedidos.innerHTML += `
-          <div class="card">
-            <div class="card-header" id="heading${index}">
-              <h2 class="mb-0">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}">
-                  Pedido ${index + 1}
-                </button>
-              </h2>
-            </div>
-
-            <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordionPedidos">
-              <div class="card-body">
-                <h4>Detalhes do Pedido ${pedido.pedido.idPedido}</h4>
-                <ul>
-                  <li><strong>Data do Pedido:</strong> ${new Date(pedido.pedido.dataPedido).toLocaleDateString()}</li>
-                  <li><strong>Nome do Cliente:</strong> ${pedido.pedido.nomeCliente}</li>
-                  <li><strong>Endereço do Cliente:</strong> ${pedido.pedido.enderecoCliente}</li>
-                  <li><strong>Telefone do Cliente:</strong> ${pedido.pedido.telefoneCliente}</li>
-                  <li><strong>Status do Pedido:</strong> ${pedido.pedido.statusPedido}</li>
-                  <li><strong>Total do Pedido:</strong> ${pedido.pedido.totalPedido.toFixed(2)}</li>
-                </ul>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <img src="./image/logo_home.png" alt="Logo Padaria Sabor Brasileiro" width="30" height="auto" class="d-inline-block align-text-top">
+        <a class="navbar-brand" href="./index.html">Padaria Sabor Brasileiro</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="./cardapio.html">Cardápio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="carrinho.html">Carrinho</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./produtos.html">Produtos</a>
+                </li>
                 
-                <h4>Itens do Pedido</h4>
-                <ul>${itensPedidoHTML}</ul>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-    })
-    .catch(error => console.error('Erro ao fazer fetch dos dados:', error));
-});
-</script>
+                <li class="nav-item">
+                    <a class="nav-link" href="./pedidos.html">Pedidos</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+  </header>
 
-</body>
+  <main>
+  
+    <div class="container mt-5">
+      <h2>Pedidos</h2>
+      <div class="accordion" id="accordionPedidos">
+        <!-- Itens do accordion serão adicionados dinamicamente aqui -->
+      </div>
+    </div>
+  </main>
+
+  
+
+  <!-- Inclua o JS do Bootstrap e o jQuery -->
+  <script src="./scritps/pedidos_script.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  </body>
 </html>
