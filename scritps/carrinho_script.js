@@ -23,7 +23,7 @@ carrinho.forEach(function (item, index) {
     tamanhoCell.innerHTML = item.tamanho;
     precoUnitarioCell.innerHTML = "R$ " + item.preco.toFixed(2);
     quantidadeCell.innerHTML = item.quantidade;
-    observacaoCell.innerHTML = "<input type='text' placeholder='Observação' id='observacao-" + index + "'>"; // Campo de observação
+    observacaoCell.innerHTML = `<input type='text' placeholder='Observação' id='observacao-${index}' value='${item.observacao || ""}'>`;
     
     totalCell.innerHTML = "R$ " + item.precoTotal.toFixed(2);
 
@@ -100,15 +100,18 @@ async function enviarPedido() {
       totalPedido: totalPedido
     };
 
-    var itensPedido = carrinho.map(itemCarrinho => ({
-      idItem: itemCarrinho.idItem,
-      quantidade: itemCarrinho.quantidade,
-      precoUnitario: itemCarrinho.preco || 0,
-      observacao: itemCarrinho.observacao || "",
-      tamanho: itemCarrinho.tamanho || "",
-      totalItem: itemCarrinho.preco * itemCarrinho.quantidade || 0,
-      produtos: itemCarrinho.idItem || 0
-    }));
+    var itensPedido = carrinho.map(function (itemCarrinho, index) {
+      return {
+          idItem: itemCarrinho.idItem,
+          quantidade: itemCarrinho.quantidade,
+          precoUnitario: itemCarrinho.preco || 0,
+          observacao: document.getElementById(`observacao-${index}`).value || "Nenhuma observação.",
+          tamanho: itemCarrinho.tamanho || "",
+          totalItem: itemCarrinho.preco * itemCarrinho.quantidade || 0,
+          produtos: itemCarrinho.idItem || 0
+      };
+    });
+  
 
     var dadosPedido = {
       pedido: pedido,
