@@ -16,14 +16,14 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto" id="navbarList">
                     <li class="nav-item">
                         <a class="nav-link" href="./cardapio.html">Cardápio</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="carrinho.html">Carrinho</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="produtosLink" style="display: none;">
                         <a class="nav-link" href="./produtos.html">Produtos</a>
                     </li>
                     
@@ -33,7 +33,7 @@
                 </ul>
             </div>
         </nav>
-    </header>
+      </header>
     <body>
         <div class="container mt-5">
             <h2>Cardápio do dia</h2>
@@ -57,5 +57,6 @@
         </div>
 
         <script src="scritps/script.js"></script>
+        <script src="scritps/navbar.js"></script>
     </body>
 </html>

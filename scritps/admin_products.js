@@ -1,7 +1,13 @@
-const baseUrl = 'http://localhost:8080/produtos'
+const baseUrl = 'http://localhost:8080/produtos';
+const token = localStorage.getItem('token');
 
 function preencherListaComDados() {
-    fetch(baseUrl + '/all')
+    fetch(baseUrl + '/all', {
+        method: 'GET',
+        headers: {
+            'Authorization': token //token de usuario
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro na requisição.');
@@ -10,7 +16,7 @@ function preencherListaComDados() {
         })
         .then(dadosDaAPI => {
             const listaContainer = document.getElementById('lista-container');
-            console.log('Dados da API:', dadosDaAPI);
+            listaContainer.innerHTML = '';  // Limpa todo o conteúdo anterior
 
             if (dadosDaAPI && Array.isArray(dadosDaAPI) && dadosDaAPI.length > 0) {
                 dadosDaAPI.forEach(item => {
@@ -87,13 +93,13 @@ function preencherListaComDados() {
                 mensagemVazia.textContent = "Nenhum produto encontrado.";
                 listaContainer.appendChild(mensagemVazia);
             }
-
         })
         .catch(error => {
             console.error(error);
-            // Em caso de erro na requisição, exibe uma mensagem de erro.
+
+            // Exibe a mensagem de erro da resposta
             const mensagemErro = document.createElement('p');
-            mensagemErro.textContent = "Erro ao carregar a lista de produtos.";
+            mensagemErro.textContent = `Erro: ${error.message}`;
             listaContainer.appendChild(mensagemErro);
         });
 }
@@ -133,7 +139,8 @@ document.getElementById('adicionarProduto').addEventListener('click', function (
     fetch(baseUrl + '/cadastrar-produto', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': token //token de usuario
         },
         body: JSON.stringify(novoProduto)
     })
@@ -203,7 +210,8 @@ function editarProduto(idProduto) {
                 fetch(baseUrl + `/edit/${idProduto}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': token //token de usuario
                     },
                     body: JSON.stringify(dadosAtualizados)
                     })
@@ -226,7 +234,10 @@ function editarProduto(idProduto) {
 function excluirProduto(idProduto) {
     if (confirm("Tem certeza de que deseja excluir este produto?")) {
         fetch(baseUrl + `/delete/${idProduto}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers:{
+                'Authorization': token //token de usuario
+            }
         })
         .then(response => {
             if (response.ok) {

@@ -55,7 +55,6 @@ function excluirItemDoCarrinho(index) {
 // Função para calcular o total do pedido com base no carrinho
 function calcularTotalPedido(carrinho) {
   // Lógica para calcular o total do pedido a partir do carrinho
-  // Substitua isso com sua própria lógica de cálculo
   return carrinho.reduce((total, item) => total + item.preco * item.quantidade, 0);
 }
 
