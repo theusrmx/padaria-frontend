@@ -14,11 +14,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Atualizar o link 'Home' para apontar para 'admin.html'
             if (homeLink) {
-                homeLink.href = 'admin.html';
+                homeLink.href = './admin.html';
             }
         } else if (userRole === 'USER' && homeLink) {
             // Atualizar o link 'Home' para apontar para 'user.html'
-            homeLink.href = 'user.html';
+            homeLink.href = './user.html';
         }
     }
 
