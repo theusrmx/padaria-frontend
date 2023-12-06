@@ -1,16 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
     function montarNavBar() {
         var userRole = localStorage.getItem('role');
-        
+
         var produtosLink = document.getElementById('produtosLink');
         var homeLink = document.getElementById('homeLink');
-
-        console.log(produtosLink, homeLink); // Adicione este console.log para depuração
+        var cadastrarUsuarioLink = document.getElementById('cadastrarUsuarioLink');
 
         if (userRole === 'ADMIN' && produtosLink) {
             // Exibir o link 'Produtos'
             produtosLink.style.display = 'block';
-            
+            cadastrarUsuarioLink.style.display = 'block';
+         
+
             // Atualizar o link 'Home' para apontar para 'admin.html'
             if (homeLink) {
                 homeLink.href = 'admin.html';
